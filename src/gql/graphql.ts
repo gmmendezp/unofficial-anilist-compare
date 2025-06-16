@@ -4554,17 +4554,17 @@ export type YearStats = {
   year?: Maybe<Scalars['Int']['output']>
 }
 
-export type ExampleQueryQueryVariables = Exact<{
+export type MediaQueryQueryVariables = Exact<{
   username: Scalars['String']['input']
 }>
 
-export type ExampleQueryQuery = {
+export type MediaQueryQuery = {
   __typename?: 'Query'
   MediaListCollection?: {
     __typename?: 'MediaListCollection'
     lists?: Array<{
       __typename?: 'MediaListGroup'
-      name?: string | null
+      status?: MediaListStatus | null
       entries?: Array<{
         __typename?: 'MediaList'
         score?: number | null
@@ -4574,6 +4574,7 @@ export type ExampleQueryQuery = {
         notes?: string | null
         media?: {
           __typename?: 'Media'
+          id: number
           episodes?: number | null
           status?: MediaStatus | null
           description?: string | null
@@ -4614,13 +4615,13 @@ export type ExampleQueryQuery = {
   } | null
 }
 
-export const ExampleQueryDocument = {
+export const MediaQueryDocument = {
   kind: 'Document',
   definitions: [
     {
       kind: 'OperationDefinition',
       operation: 'query',
-      name: { kind: 'Name', value: 'ExampleQuery' },
+      name: { kind: 'Name', value: 'MediaQuery' },
       variableDefinitions: [
         {
           kind: 'VariableDefinition',
@@ -4667,7 +4668,10 @@ export const ExampleQueryDocument = {
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'status' },
+                      },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'entries' },
@@ -4680,6 +4684,10 @@ export const ExampleQueryDocument = {
                               selectionSet: {
                                 kind: 'SelectionSet',
                                 selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'id' },
+                                  },
                                   {
                                     kind: 'Field',
                                     name: { kind: 'Name', value: 'title' },
@@ -4858,4 +4866,4 @@ export const ExampleQueryDocument = {
       },
     },
   ],
-} as unknown as DocumentNode<ExampleQueryQuery, ExampleQueryQueryVariables>
+} as unknown as DocumentNode<MediaQueryQuery, MediaQueryQueryVariables>

@@ -1,83 +1,53 @@
-import { useQuery } from '@tanstack/react-query'
-import request from 'graphql-request'
-import { graphql } from '../gql/gql'
+import { Link, Table } from '@chakra-ui/react'
+import useUserListComparisonData from '../hooks/useUserListComparisonData'
+import type { TitleType } from '../constants'
 
-type ComparisonTableProps = {
+interface ComparisonTableProps {
   usernameFrom: string
   usernameTo: string
+  statusFrom: string
+  statusTo: string
+  titleType: TitleType
 }
 
-const getCollectionFromUser = graphql(`
-  query ExampleQuery($username: String!) {
-    MediaListCollection(userName: $username, type: ANIME) {
-      lists {
-        name
-        entries {
-          media {
-            title {
-              english
-              romaji
-              native
-            }
-            episodes
-            status
-            description
-            coverImage {
-              medium
-            }
-            synonyms
-            tags {
-              name
-              rank
-              isGeneralSpoiler
-              isMediaSpoiler
-            }
-            siteUrl
-          }
-          score
-          progress
-          repeat
-          startedAt {
-            day
-            month
-            year
-          }
-          completedAt {
-            day
-            month
-            year
-          }
-          status
-          notes
-        }
-      }
-    }
-  }
-`)
+function ComparisonTable({
+  usernameFrom,
+  usernameTo,
+  statusFrom,
+  statusTo,
+  titleType,
+}: ComparisonTableProps) {
+  const comparisonData = useUserListComparisonData(
+    usernameFrom,
+    usernameTo,
+    statusFrom,
+    statusTo
+  )
 
-function ComparisonTable({ usernameFrom, usernameTo }: ComparisonTableProps) {
-  const { data: userFromList } = useQuery({
-    queryKey: [usernameFrom],
-    queryFn: async () =>
-      request('https://graphql.anilist.co', getCollectionFromUser, {
-        username: usernameFrom,
-      }),
-    enabled: !!usernameFrom,
-  })
-  const { data: userToList } = useQuery({
-    queryKey: [usernameTo],
-    queryFn: async () =>
-      request('https://graphql.anilist.co', getCollectionFromUser, {
-        username: usernameTo,
-      }),
-    enabled: !!usernameTo,
-  })
   return (
     <>
-      <div>{usernameFrom}</div>
-      <div>{JSON.stringify(userFromList, null, 2)}</div>
-      <div>{usernameTo}</div>
-      <div>{JSON.stringify(userToList, null, 2)}</div>
+      {comparisonData.length > 0 && (
+        <Table.Root size="sm" variant="line" stickyHeader interactive>
+          <Table.Header>
+            <Table.Row>
+              <Table.ColumnHeader>Anime</Table.ColumnHeader>
+              <Table.ColumnHeader>{usernameFrom}'s status</Table.ColumnHeader>
+              <Table.ColumnHeader>{usernameTo}'s status</Table.ColumnHeader>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {comparisonData?.map(({ id, url, title, fromStatus, toStatus }) => (
+              <Table.Row key={id}>
+                <Table.Cell>
+                  <Link href={url || ''}>{title[titleType]}</Link>
+                </Table.Cell>
+                <Table.Cell>{fromStatus}</Table.Cell>
+                <Table.Cell>{toStatus}</Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table.Root>
+      )}
     </>
   )
 }
