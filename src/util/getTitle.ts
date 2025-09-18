@@ -1,11 +1,9 @@
 import { TITLE_TYPE } from '../constants'
-import type { Media } from '../gql/graphql'
+import type { MediaTitle } from '../gql/graphql'
 
-export const getTitle = (media?: Media | null, titleType?: string) => {
-  if (!media) return ''
-  if (titleType === TITLE_TYPE.ENGLISH && media.title?.english)
-    return media.title?.english
-  if (titleType === TITLE_TYPE.NATIVE && media.title?.native)
-    return media.title?.native
-  return media.title?.romaji || media.title?.english || ''
+export const getTitle = (title?: MediaTitle | null, titleType?: string) => {
+  if (!title) return ''
+  if (titleType === TITLE_TYPE.ENGLISH && title.english) return title.english
+  if (titleType === TITLE_TYPE.NATIVE && title.native) return title.native
+  return title.romaji || title.english || ''
 }

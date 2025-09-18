@@ -3,17 +3,19 @@ export type valueof<T> = T[keyof T]
 export const STATUS = {
   ALL: 'ALL',
   COMPLETED: 'COMPLETED',
+  DROPPED: 'DROPPED',
   PAUSED: 'PAUSED',
   PLANNING: 'PLANNING',
-  WATCHING: 'WATCHING',
+  CURRENT: 'CURRENT',
 } as const
 
 export const STATUS_LABELS = {
   ALL: 'All',
   COMPLETED: 'Completed',
+  DROPPED: 'Dropped',
   PAUSED: 'Paused',
   PLANNING: 'Planning',
-  WATCHING: 'Watching',
+  CURRENT: 'Watching',
 } as const
 
 export const TITLE_TYPE = {

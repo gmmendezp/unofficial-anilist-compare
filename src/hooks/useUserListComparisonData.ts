@@ -8,7 +8,7 @@ import {
 } from '../gql/graphql'
 import { STATUS, type TitleType } from '../constants'
 
-type UserListComparisonData = Array<{
+export type UserListComparisonData = Array<{
   id: number
   fromStatus: string
   toStatus: string
@@ -67,17 +67,13 @@ const getCollectionFromUser = graphql(`
 
 const useUserListComparisonData: (
   usernameFrom: string,
-  usernameTo: string,
-  statusFrom: string,
-  statusTo: string
-) => UserListComparisonData = (
+  usernameTo: string
+) => { comparisonData: UserListComparisonData; isLoading: boolean } = (
   usernameFrom,
-  usernameTo,
-  statusFrom,
-  statusTo
+  usernameTo
 ) => {
   let comparisonData: UserListComparisonData = []
-  const { data: userFromData } = useQuery<{
+  const { data: userFromData, isFetching: userFromIsFetching } = useQuery<{
     MediaListCollection: MediaListCollection
   }>({
     queryKey: [usernameFrom],
@@ -88,18 +84,12 @@ const useUserListComparisonData: (
     enabled: !!usernameFrom,
   })
   const userFromList = userFromData?.MediaListCollection?.lists
-    ?.filter(
-      (media) =>
-        (statusFrom === STATUS.ALL &&
-          media?.status &&
-          Object.keys(STATUS).indexOf(media?.status) >= 0) ||
-        statusFrom === media?.status
-    )
+    ?.filter((media) => media?.status && media?.status in STATUS)
     .reduce<
       Maybe<MediaList>[]
     >((result, list) => (list?.entries ? [...result, ...list.entries] : result), [])
 
-  const { data: userToData } = useQuery<{
+  const { data: userToData, isFetching: userToIsFetching } = useQuery<{
     MediaListCollection: MediaListCollection
   }>({
     queryKey: [usernameTo],
@@ -110,13 +100,7 @@ const useUserListComparisonData: (
     enabled: !!usernameTo,
   })
   const userToList = userToData?.MediaListCollection?.lists
-    ?.filter(
-      (media) =>
-        (statusTo === STATUS.ALL &&
-          media?.status &&
-          Object.keys(STATUS).indexOf(media?.status) >= 0) ||
-        statusTo === media?.status
-    )
+    ?.filter((media) => media?.status && media?.status in STATUS)
     .reduce(
       (result, list) => (list?.entries ? [...result, ...list.entries] : result),
       [] as Maybe<MediaList>[]
@@ -130,7 +114,6 @@ const useUserListComparisonData: (
           (entryTo) =>
             entryTo?.media && entryTo.media.id === entryFrom?.media?.id
         )
-        console.log(entryFrom, foundMedia)
         if (
           foundMedia?.length &&
           foundMedia[0] &&
@@ -156,7 +139,10 @@ const useUserListComparisonData: (
       []
     )
   }
-  return comparisonData
+  return {
+    comparisonData,
+    isLoading: userFromIsFetching || userToIsFetching,
+  }
 }
 
 export default useUserListComparisonData
