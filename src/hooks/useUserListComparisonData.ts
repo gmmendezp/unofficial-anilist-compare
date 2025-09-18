@@ -8,13 +8,15 @@ import {
 } from '../gql/graphql'
 import { STATUS, type TitleType } from '../constants'
 
-export type UserListComparisonData = Array<{
+export type UserListData = {
   id: number
   fromStatus: string
   toStatus: string
   title: { [key in TitleType]: string }
   url: string
-}>
+}
+
+export type UserListComparisonData = Array<UserListData>
 
 const getCollectionFromUser = graphql(`
   query MediaQuery($username: String!) {
