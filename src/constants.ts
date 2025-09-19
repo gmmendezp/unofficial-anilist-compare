@@ -24,5 +24,15 @@ export const TITLE_TYPE = {
   NATIVE: 'native',
 } as const
 
+export const FORMAT_NAME = {
+  TV: 'TV',
+  TV_SHORT: 'Short',
+  MOVIE: 'Movie',
+  SPECIAL: 'Special',
+  OVA: 'OVA',
+  ONA: 'ONA',
+  MUSIC: 'Music',
+}
+
 export type StatusType = valueof<typeof STATUS>
 export type TitleType = valueof<typeof TITLE_TYPE>

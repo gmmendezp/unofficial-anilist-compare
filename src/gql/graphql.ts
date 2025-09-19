@@ -4575,10 +4575,15 @@ export type MediaQueryQuery = {
         media?: {
           __typename?: 'Media'
           id: number
+          format?: MediaFormat | null
+          season?: MediaSeason | null
+          seasonYear?: number | null
+          averageScore?: number | null
           episodes?: number | null
           status?: MediaStatus | null
           description?: string | null
           synonyms?: Array<string | null> | null
+          genres?: Array<string | null> | null
           siteUrl?: string | null
           title?: {
             __typename?: 'MediaTitle'
@@ -4589,9 +4594,11 @@ export type MediaQueryQuery = {
           coverImage?: {
             __typename?: 'MediaCoverImage'
             medium?: string | null
+            large?: string | null
           } | null
           tags?: Array<{
             __typename?: 'MediaTag'
+            id: number
             name: string
             rank?: number | null
             isGeneralSpoiler?: boolean | null
@@ -4720,6 +4727,25 @@ export const MediaQueryDocument = {
                                   },
                                   {
                                     kind: 'Field',
+                                    name: { kind: 'Name', value: 'format' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'season' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'seasonYear' },
+                                  },
+                                  {
+                                    kind: 'Field',
+                                    name: {
+                                      kind: 'Name',
+                                      value: 'averageScore',
+                                    },
+                                  },
+                                  {
+                                    kind: 'Field',
                                     name: { kind: 'Name', value: 'episodes' },
                                   },
                                   {
@@ -4746,6 +4772,13 @@ export const MediaQueryDocument = {
                                             value: 'medium',
                                           },
                                         },
+                                        {
+                                          kind: 'Field',
+                                          name: {
+                                            kind: 'Name',
+                                            value: 'large',
+                                          },
+                                        },
                                       ],
                                     },
                                   },
@@ -4755,10 +4788,18 @@ export const MediaQueryDocument = {
                                   },
                                   {
                                     kind: 'Field',
+                                    name: { kind: 'Name', value: 'genres' },
+                                  },
+                                  {
+                                    kind: 'Field',
                                     name: { kind: 'Name', value: 'tags' },
                                     selectionSet: {
                                       kind: 'SelectionSet',
                                       selections: [
+                                        {
+                                          kind: 'Field',
+                                          name: { kind: 'Name', value: 'id' },
+                                        },
                                         {
                                           kind: 'Field',
                                           name: { kind: 'Name', value: 'name' },

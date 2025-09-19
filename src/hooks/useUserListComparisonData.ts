@@ -6,14 +6,24 @@ import {
   type MediaList,
   type Maybe,
 } from '../gql/graphql'
-import { STATUS, type TitleType } from '../constants'
+import { FORMAT_NAME, STATUS, type TitleType } from '../constants'
 
 export type UserListData = {
   id: number
   fromStatus: string
+  fromScore?: Maybe<number>
   toStatus: string
+  toScore?: Maybe<number>
   title: { [key in TitleType]: string }
   url: string
+  description: string
+  image: string
+  season: string
+  year?: Maybe<number>
+  format: string
+  episodeCount?: Maybe<number>
+  genres?: Array<string>
+  averageScore?: Maybe<number>
 }
 
 export type UserListComparisonData = Array<UserListData>
@@ -31,14 +41,21 @@ const getCollectionFromUser = graphql(`
               romaji
               native
             }
+            format
+            season
+            seasonYear
+            averageScore
             episodes
             status
             description
             coverImage {
               medium
+              large
             }
             synonyms
+            genres
             tags {
+              id
               name
               rank
               isGeneralSpoiler
@@ -84,6 +101,7 @@ const useUserListComparisonData: (
         username: usernameFrom,
       }),
     enabled: !!usernameFrom,
+    refetchOnWindowFocus: false,
   })
   const userFromList = userFromData?.MediaListCollection?.lists
     ?.filter((media) => media?.status && media?.status in STATUS)
@@ -100,6 +118,7 @@ const useUserListComparisonData: (
         username: usernameTo,
       }),
     enabled: !!usernameTo,
+    refetchOnWindowFocus: false,
   })
   const userToList = userToData?.MediaListCollection?.lists
     ?.filter((media) => media?.status && media?.status in STATUS)
@@ -121,21 +140,39 @@ const useUserListComparisonData: (
           foundMedia[0] &&
           entryFrom.status &&
           foundMedia[0].status
-        )
+        ) {
           return [
             ...result,
             {
               id: entryFrom.media.id,
               fromStatus: entryFrom.status,
+              fromScore: entryFrom.score,
               toStatus: foundMedia[0].status,
+              toScore: foundMedia[0].score,
               title: {
                 english: entryFrom.media.title?.english || '',
                 native: entryFrom.media.title?.native || '',
                 romaji: entryFrom.media.title?.romaji || '',
               },
               url: entryFrom.media.siteUrl || '',
+              image: entryFrom.media.coverImage?.large || '',
+              description: entryFrom.media.description || '',
+              season: entryFrom.media.season || '',
+              year: entryFrom.media.seasonYear,
+              episodeCount: entryFrom.media.episodes,
+              format: entryFrom.media.format
+                ? FORMAT_NAME[
+                    entryFrom.media.format as keyof typeof FORMAT_NAME
+                  ]
+                : '',
+              genres:
+                entryFrom.media.genres
+                  ?.filter((genre) => !!genre)
+                  .map((genre) => `${genre}`) || [],
+              averageScore: entryFrom.media.averageScore,
             },
           ]
+        }
         return result
       },
       []

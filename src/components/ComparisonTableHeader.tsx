@@ -16,18 +16,23 @@ function ComparisonTableHeader({
   isBeingSorted,
   updateSortProp,
   isAsc,
+  children,
   ...rest
 }: ComparisonTableHeaderProps) {
   return (
     <Table.ColumnHeader
       onClick={() => updateSortProp(propertyName)}
-      _hover={{ bg: 'gray.300' }}
+      bgColor="darkblue.200"
+      color="white"
+      _hover={{ bgColor: 'darkblue.500' }}
+      fontSize="small"
       {...rest}
     >
       {headerName}
       {isBeingSorted && (
         <Icon size="sm">{isAsc ? <FiChevronDown /> : <FiChevronUp />}</Icon>
       )}
+      {children}
     </Table.ColumnHeader>
   )
 }

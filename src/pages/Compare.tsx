@@ -20,7 +20,6 @@ function Compare() {
       flexWrap={'wrap'}
       flexDirection={{ base: 'column', md: 'row' }}
       justifyContent="space-between"
-      backgroundColor="#152232"
     >
       <Box md={{ w: '70%' }} flex="none">
         <UserForm

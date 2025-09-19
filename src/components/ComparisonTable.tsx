@@ -1,14 +1,13 @@
-import { Table } from '@chakra-ui/react'
-import useUserListComparisonData from '../hooks/useUserListComparisonData'
-import { STATUS, type StatusType, type TitleType } from '../constants'
-import Title from './Title'
-import Status from './Status'
-import { sortComparisonData } from '../util/sortComparisonData'
 import { useState } from 'react'
+import { Table } from '@chakra-ui/react'
+import { Commet } from 'react-loading-indicators'
+import useUserListComparisonData from '../hooks/useUserListComparisonData'
+import { sortComparisonData } from '../util/sortComparisonData'
+import { filterComparisonData } from '../util/filterComparisonData'
 import ComparisonTableHeader from './ComparisonTableHeader'
 import ListSelector from './ListSelector'
-import { filterComparisonData } from '../util/filterComparisonData'
-import { Commet } from 'react-loading-indicators'
+import ComparisonTableDataRow from './ComparisonTableDataRow'
+import { STATUS, type StatusType, type TitleType } from '../constants'
 
 interface ComparisonTableProps {
   usernameFrom: string
@@ -42,14 +41,22 @@ function ComparisonTable({
 
   return (
     <>
-      <Table.Root size="sm" variant="line" stickyHeader interactive>
+      <Table.Root
+        size="sm"
+        variant="line"
+        stickyHeader
+        bgColor="darkblue.300"
+        color="white"
+      >
         <Table.ColumnGroup>
           <Table.Column />
           <Table.Column htmlWidth="150px" />
           <Table.Column htmlWidth="150px" />
+          <Table.Column htmlWidth="100px" />
+          <Table.Column htmlWidth="100px" />
         </Table.ColumnGroup>
         <Table.Header cursor="pointer">
-          <Table.Row bg="bg.emphasized">
+          <Table.Row>
             <ComparisonTableHeader
               headerName="Anime"
               propertyName="title"
@@ -64,7 +71,14 @@ function ComparisonTable({
               isAsc={isAsc}
               isBeingSorted={!!(sortProp === 'fromStatus')}
               textAlign="center"
-            />
+            >
+              <ListSelector
+                defaultValue={[STATUS.ALL]}
+                onValueChange={({ value }) =>
+                  setStatusFrom(value[0] as StatusType)
+                }
+              />
+            </ComparisonTableHeader>
             <ComparisonTableHeader
               headerName={`${usernameTo || 'User 2'}'s status`}
               propertyName="toStatus"
@@ -72,58 +86,49 @@ function ComparisonTable({
               isAsc={isAsc}
               isBeingSorted={!!(sortProp === 'toStatus')}
               textAlign="center"
-            />
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          <Table.Row bg="white">
-            <Table.Cell />
-            <Table.Cell textAlign="center">
+            >
               <ListSelector
-                variant="subtle"
-                size="sm"
-                defaultValue={[STATUS.ALL]}
-                onValueChange={({ value }) =>
-                  setStatusFrom(value[0] as StatusType)
-                }
-              ></ListSelector>
-            </Table.Cell>
-            <Table.Cell textAlign="center">
-              <ListSelector
-                variant="subtle"
-                size="sm"
                 defaultValue={[STATUS.ALL]}
                 onValueChange={({ value }) =>
                   setStatusTo(value[0] as StatusType)
                 }
-              ></ListSelector>
-            </Table.Cell>
+              />
+            </ComparisonTableHeader>
+            <ComparisonTableHeader
+              headerName={`${usernameFrom || 'User 1'}'s score`}
+              propertyName="fromScore"
+              updateSortProp={updateSortProp}
+              isAsc={isAsc}
+              isBeingSorted={!!(sortProp === 'fromScore')}
+              textAlign="center"
+            />
+            <ComparisonTableHeader
+              headerName={`${usernameTo || 'User 2'}'s score`}
+              propertyName="toScore"
+              updateSortProp={updateSortProp}
+              isAsc={isAsc}
+              isBeingSorted={!!(sortProp === 'toScore')}
+              textAlign="center"
+            />
           </Table.Row>
+        </Table.Header>
+        <Table.Body>
           {isLoading ? (
-            <Table.Row bg="white">
-              <Table.Cell colSpan={3} textAlign="center">
-                <Commet color="#355262" size="large" text="" textColor="" />
+            <Table.Row bgColor="inherit">
+              <Table.Cell colSpan={5} textAlign="center" borderStyle="hidden">
+                <Commet
+                  color="var(--chakra-colors-darkblue-700)"
+                  size="large"
+                />
               </Table.Cell>
             </Table.Row>
           ) : updatedComparisonData && updatedComparisonData.length > 0 ? (
-            updatedComparisonData.map(
-              ({ id, url, title, fromStatus, toStatus }) => (
-                <Table.Row key={id}>
-                  <Table.Cell>
-                    <Title title={title} url={url} titleType={titleType} />
-                  </Table.Cell>
-                  <Table.Cell textAlign="center">
-                    <Status status={fromStatus} />
-                  </Table.Cell>
-                  <Table.Cell textAlign="center">
-                    <Status status={toStatus} />
-                  </Table.Cell>
-                </Table.Row>
-              )
-            )
+            updatedComparisonData.map((data) => (
+              <ComparisonTableDataRow data={data} titleType={titleType} />
+            ))
           ) : (
-            <Table.Row bg="white">
-              <Table.Cell colSpan={3} textAlign="center">
+            <Table.Row bgColor="inherit">
+              <Table.Cell colSpan={5} textAlign="center" borderStyle="hidden">
                 No Data
               </Table.Cell>
             </Table.Row>

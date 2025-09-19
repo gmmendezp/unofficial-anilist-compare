@@ -17,7 +17,14 @@ const statusCollection = createListCollection({
 
 function ListSelector({ ...rest }: ListSelectorProps) {
   return (
-    <Select.Root {...rest} collection={statusCollection}>
+    <Select.Root
+      color="black"
+      variant="subtle"
+      size="xs"
+      {...rest}
+      collection={statusCollection}
+      onClick={(e) => e.stopPropagation()}
+    >
       <Select.HiddenSelect />
       <Select.Control>
         <Select.Trigger>
