@@ -1,7 +1,12 @@
 import { useState } from 'react'
 import { Box, Stack } from '@chakra-ui/react'
 import ComparisonTable from '../components/ComparisonTable'
-import { TITLE_TYPE, type TitleType } from '../constants'
+import {
+  MERGE_METHOD,
+  TITLE_TYPE,
+  type MergeMethodType,
+  type TitleType,
+} from '../constants'
 import TitleLanguageSelector from '../components/TitleLanguageSelector'
 import UserForm from '../components/UserForm'
 
@@ -9,6 +14,9 @@ function Compare() {
   const [usernameFrom, setUsernameFrom] = useState('')
   const [usernameTo, setUsernameTo] = useState('')
   const [titleType, setTitleType] = useState<TitleType>(TITLE_TYPE.ENGLISH)
+  const [mergeMethod, setMergeMethod] = useState<MergeMethodType>(
+    MERGE_METHOD.AANDB
+  )
 
   return (
     <Stack
@@ -25,6 +33,8 @@ function Compare() {
         <UserForm
           setUsernameFrom={setUsernameFrom}
           setUsernameTo={setUsernameTo}
+          mergeMethod={mergeMethod}
+          setMergeMethod={setMergeMethod}
         />
       </Box>
 
@@ -39,6 +49,7 @@ function Compare() {
         usernameFrom={usernameFrom}
         usernameTo={usernameTo}
         titleType={titleType}
+        mergeMethod={mergeMethod}
       />
     </Stack>
   )

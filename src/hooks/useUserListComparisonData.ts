@@ -1,12 +1,11 @@
-import { useQuery } from '@tanstack/react-query'
-import request, { type RequestDocument } from 'graphql-request'
-import { graphql } from '../gql/gql'
+import { type Maybe, type MediaList } from '../gql/graphql'
 import {
-  type MediaListCollection,
-  type MediaList,
-  type Maybe,
-} from '../gql/graphql'
-import { FORMAT_NAME, STATUS, type TitleType } from '../constants'
+  FORMAT_NAME,
+  MERGE_METHOD,
+  type MergeMethodType,
+  type TitleType,
+} from '../constants'
+import useGetUserList from './useGetUserList'
 
 export type UserListData = {
   id: number
@@ -28,162 +27,111 @@ export type UserListData = {
 
 export type UserListComparisonData = Array<UserListData>
 
-const getCollectionFromUser = graphql(`
-  query MediaQuery($username: String!) {
-    MediaListCollection(userName: $username, type: ANIME) {
-      lists {
-        status
-        entries {
-          media {
-            id
-            title {
-              english
-              romaji
-              native
-            }
-            format
-            season
-            seasonYear
-            averageScore
-            episodes
-            status
-            description
-            coverImage {
-              medium
-              large
-            }
-            synonyms
-            genres
-            tags {
-              id
-              name
-              rank
-              isGeneralSpoiler
-              isMediaSpoiler
-            }
-            siteUrl
-          }
-          score
-          progress
-          repeat
-          startedAt {
-            day
-            month
-            year
-          }
-          completedAt {
-            day
-            month
-            year
-          }
-          status
-          notes
-        }
-      }
-    }
-  }
-`) as RequestDocument
-
 type GetUserListComparisonDataType = (
   usernameFrom: string,
-  usernameTo: string
+  usernameTo: string,
+  mergeMethod?: MergeMethodType
 ) => { comparisonData: UserListComparisonData; isLoading: boolean }
 
 const useUserListComparisonData: GetUserListComparisonDataType = (
   usernameFrom,
-  usernameTo
+  usernameTo,
+  mergeMethod = MERGE_METHOD.AANDB
 ) => {
-  let comparisonData: UserListComparisonData = []
-  const { data: userFromData, isFetching: userFromIsFetching } = useQuery<{
-    MediaListCollection: MediaListCollection
-  }>({
-    queryKey: [usernameFrom, 'list'],
-    queryFn: async () =>
-      request('https://graphql.anilist.co', getCollectionFromUser, {
-        username: usernameFrom,
-      }),
-    enabled: !!usernameFrom && !!usernameTo,
-    refetchOnWindowFocus: false,
-  })
-  const userFromList = userFromData?.MediaListCollection?.lists
-    ?.filter((media) => media?.status && media?.status in STATUS)
-    .reduce<
-      Maybe<MediaList>[]
-    >((result, list) => (list?.entries ? [...result, ...list.entries] : result), [])
+  const { data: userFromList, isLoading: userFromIsLoading } = useGetUserList(
+    usernameFrom,
+    !!usernameFrom && !!usernameTo
+  )
+  const { data: userToList, isLoading: userToIsLoading } = useGetUserList(
+    usernameTo,
+    !!usernameFrom && !!usernameTo
+  )
 
-  const { data: userToData, isFetching: userToIsFetching } = useQuery<{
-    MediaListCollection: MediaListCollection
-  }>({
-    queryKey: [usernameTo, 'list'],
-    queryFn: async () =>
-      request('https://graphql.anilist.co', getCollectionFromUser, {
-        username: usernameTo,
-      }),
-    enabled: !!usernameFrom && !!usernameTo,
-    refetchOnWindowFocus: false,
-  })
-  const userToList = userToData?.MediaListCollection?.lists
-    ?.filter((media) => media?.status && media?.status in STATUS)
-    .reduce(
-      (result, list) => (list?.entries ? [...result, ...list.entries] : result),
-      [] as Maybe<MediaList>[]
-    )
+  const mergedData = compareLists(userFromList, userToList)
 
-  if (userFromList && userToList) {
-    comparisonData = userFromList.reduce<UserListComparisonData>(
-      (result, entryFrom) => {
-        if (!entryFrom?.media?.id) return result
-        const foundMedia = userToList?.filter(
-          (entryTo) =>
-            entryTo?.media && entryTo.media.id === entryFrom?.media?.id
-        )
-        if (
-          foundMedia?.length &&
-          foundMedia[0] &&
-          entryFrom.status &&
-          foundMedia[0].status
-        ) {
-          return [
-            ...result,
-            {
-              id: entryFrom.media.id,
-              fromStatus: entryFrom.status,
-              fromScore: entryFrom.score,
-              toStatus: foundMedia[0].status,
-              toScore: foundMedia[0].score,
-              title: {
-                english: entryFrom.media.title?.english || '',
-                native: entryFrom.media.title?.native || '',
-                romaji: entryFrom.media.title?.romaji || '',
-              },
-              url: entryFrom.media.siteUrl || '',
-              image: entryFrom.media.coverImage?.large || '',
-              description: entryFrom.media.description || '',
-              season: entryFrom.media.season || '',
-              year: entryFrom.media.seasonYear,
-              episodeCount: entryFrom.media.episodes,
-              format: entryFrom.media.format
-                ? FORMAT_NAME[
-                    entryFrom.media.format as keyof typeof FORMAT_NAME
-                  ]
-                : '',
-              genres:
-                entryFrom.media.genres
-                  ?.filter((genre) => !!genre)
-                  .map((genre) => `${genre}`) || [],
-              averageScore: entryFrom.media.averageScore,
-            },
-          ]
-        }
-        return result
-      },
-      []
-    )
-  }
   return {
-    comparisonData,
-    isLoading: userFromIsFetching || userToIsFetching,
+    comparisonData: mergedData[mergeMethod],
+    isLoading: userFromIsLoading || userToIsLoading,
   }
 }
+
+const compareLists = (
+  list1: Maybe<MediaList>[],
+  list2: Array<Maybe<MediaList>>
+): {
+  [method: MergeMethodType]: UserListComparisonData
+} => {
+  const aandb: UserListComparisonData = []
+  const aorb: UserListComparisonData = []
+  const anotb: UserListComparisonData = []
+  const bnota: UserListComparisonData = []
+  if (list1 && list2) {
+    list1.forEach((entry: Maybe<MediaList>) => {
+      if (!entry?.media?.id) return
+      const foundMedia = list2?.filter(
+        (entry2) => entry2?.media?.id === entry?.media?.id
+      )
+      const newEntry = constructEntry(entry, foundMedia[0])
+      if (entry.status) {
+        aorb.push(newEntry)
+        if (foundMedia?.length && foundMedia[0] && foundMedia[0].status) {
+          aandb.push(newEntry)
+        }
+        if (!foundMedia?.length || !foundMedia[0]) {
+          anotb.push(newEntry)
+        }
+      }
+    })
+    list2.forEach((entry: Maybe<MediaList>) => {
+      if (!entry?.media?.id) return
+      const foundMedia = list1?.filter(
+        (entry2) => entry2?.media?.id === entry?.media?.id
+      )
+      const newEntry = constructEntry(foundMedia[0], entry)
+      if (entry.status) {
+        if (!foundMedia?.length || !foundMedia[0]) {
+          bnota.push(newEntry)
+          aorb.push(newEntry)
+        }
+      }
+    })
+  }
+  return {
+    [MERGE_METHOD.AANDB]: aandb,
+    [MERGE_METHOD.AORB]: aorb,
+    [MERGE_METHOD.ANOTB]: anotb,
+    [MERGE_METHOD.BNOTA]: bnota,
+  }
+}
+
+const constructEntry = (
+  entry1: Maybe<MediaList>,
+  entry2?: Maybe<MediaList>
+): UserListData => ({
+  id: (entry1 || entry2)?.media?.id || 0,
+  fromStatus: entry1?.status || 'NONE',
+  fromScore: entry1?.score,
+  toStatus: entry2?.status || 'NONE',
+  toScore: entry2?.score,
+  title: {
+    english: (entry1 || entry2)?.media?.title?.english || '',
+    native: (entry1 || entry2)?.media?.title?.native || '',
+    romaji: (entry1 || entry2)?.media?.title?.romaji || '',
+  },
+  url: (entry1 || entry2)?.media?.siteUrl || '',
+  image: (entry1 || entry2)?.media?.coverImage?.large || '',
+  description: (entry1 || entry2)?.media?.description || '',
+  season: (entry1 || entry2)?.media?.season || '',
+  year: (entry1 || entry2)?.media?.seasonYear,
+  episodeCount: (entry1 || entry2)?.media?.episodes,
+  format: (entry1 || entry2)?.media?.format
+    ? FORMAT_NAME[(entry1 || entry2)?.media?.format as keyof typeof FORMAT_NAME]
+    : '',
+  genres:
+    (entry1 || entry2)?.media?.genres
+      ?.filter((genre) => !!genre)
+      .map((genre) => `${genre}`) || [],
+  averageScore: (entry1 || entry2)?.media?.averageScore,
+})
 
 export default useUserListComparisonData

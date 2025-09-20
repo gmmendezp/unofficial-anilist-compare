@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   ButtonGroup,
   IconButton,
@@ -14,7 +14,12 @@ import { filterComparisonData } from '../util/filterComparisonData'
 import ComparisonTableHeader from './ComparisonTableHeader'
 import ListSelector from './ListSelector'
 import ComparisonTableDataRow from './ComparisonTableDataRow'
-import { STATUS, type StatusType, type TitleType } from '../constants'
+import {
+  STATUS,
+  type MergeMethodType,
+  type StatusType,
+  type TitleType,
+} from '../constants'
 import ResultsBox from './ResultsBox'
 import { LuChevronLeft, LuChevronRight } from 'react-icons/lu'
 
@@ -22,12 +27,14 @@ interface ComparisonTableProps {
   usernameFrom: string
   usernameTo: string
   titleType: TitleType
+  mergeMethod: MergeMethodType
 }
 
 function ComparisonTable({
   usernameFrom,
   usernameTo,
   titleType,
+  mergeMethod,
 }: ComparisonTableProps) {
   const [statusFrom, setStatusFrom] = useState<StatusType>(STATUS.ALL)
   const [statusTo, setStatusTo] = useState<StatusType>(STATUS.ALL)
@@ -38,7 +45,8 @@ function ComparisonTable({
   const [currentPage, setCurrentPage] = useState(1)
   const { comparisonData, isLoading } = useUserListComparisonData(
     usernameFrom,
-    usernameTo
+    usernameTo,
+    mergeMethod
   )
 
   const updatedComparisonData = filterComparisonData(
@@ -53,6 +61,10 @@ function ComparisonTable({
     if (sortProp === value) setIsAsc(!isAsc)
     setSortProp(value)
   }
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [usernameFrom, usernameTo, mergeMethod])
 
   return (
     <VStack w="100%">

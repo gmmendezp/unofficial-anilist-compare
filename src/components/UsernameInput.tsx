@@ -59,7 +59,7 @@ function UsernameInput({ label, onChange }: UsernameInputProps) {
   }
 
   return (
-    <Field.Root md={{ maxW: '45%' }} flex="none">
+    <Field.Root md={{ maxW: '35%' }} flex="none">
       <Field.Label color="text.300">
         {label}
         <Field.RequiredIndicator />

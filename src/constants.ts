@@ -7,6 +7,7 @@ export const STATUS = {
   PAUSED: 'PAUSED',
   PLANNING: 'PLANNING',
   CURRENT: 'CURRENT',
+  NONE: 'NONE',
 } as const
 
 export const STATUS_LABELS = {
@@ -16,6 +17,7 @@ export const STATUS_LABELS = {
   PAUSED: 'Paused',
   PLANNING: 'Planning',
   CURRENT: 'Watching',
+  NONE: 'None',
 } as const
 
 export const TITLE_TYPE = {
@@ -34,5 +36,13 @@ export const FORMAT_NAME = {
   MUSIC: 'Music',
 }
 
+export const MERGE_METHOD = {
+  AANDB: `A and B`,
+  AORB: 'A or B',
+  ANOTB: 'A not B',
+  BNOTA: 'B not A',
+}
+
 export type StatusType = valueof<typeof STATUS>
 export type TitleType = valueof<typeof TITLE_TYPE>
+export type MergeMethodType = valueof<typeof MERGE_METHOD>
