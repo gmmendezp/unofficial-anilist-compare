@@ -185,46 +185,50 @@ function ComparisonTable({
           )}
         </Table.Body>
       </Table.Root>
-      <Pagination.Root
-        count={updatedComparisonData.length}
-        pageSize={pageSize}
-        page={currentPage}
-      >
-        <ButtonGroup variant="ghost" size="sm" wrap="wrap">
-          <Pagination.PrevTrigger asChild>
-            <IconButton
-              color="text.200"
-              onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
-            >
-              <LuChevronLeft />
-            </IconButton>
-          </Pagination.PrevTrigger>
-
-          <Pagination.Items
-            render={(page) => (
+      {!!updatedComparisonData.length && (
+        <Pagination.Root
+          count={updatedComparisonData.length}
+          pageSize={pageSize}
+          page={currentPage}
+        >
+          <ButtonGroup variant="ghost" size="sm" wrap="wrap">
+            <Pagination.PrevTrigger asChild>
               <IconButton
-                variant={{ base: 'ghost', _selected: 'outline' }}
                 color="text.200"
-                onClick={() => setCurrentPage(page.value)}
+                onClick={() =>
+                  currentPage > 1 && setCurrentPage(currentPage - 1)
+                }
               >
-                {page.value}
+                <LuChevronLeft />
               </IconButton>
-            )}
-            color="text.200"
-          />
+            </Pagination.PrevTrigger>
 
-          <Pagination.NextTrigger asChild>
-            <IconButton
+            <Pagination.Items
+              render={(page) => (
+                <IconButton
+                  variant={{ base: 'ghost', _selected: 'outline' }}
+                  color="text.200"
+                  onClick={() => setCurrentPage(page.value)}
+                >
+                  {page.value}
+                </IconButton>
+              )}
               color="text.200"
-              onClick={() =>
-                currentPage < pageSize && setCurrentPage(currentPage + 1)
-              }
-            >
-              <LuChevronRight />
-            </IconButton>
-          </Pagination.NextTrigger>
-        </ButtonGroup>
-      </Pagination.Root>
+            />
+
+            <Pagination.NextTrigger asChild>
+              <IconButton
+                color="text.200"
+                onClick={() =>
+                  currentPage < pageSize && setCurrentPage(currentPage + 1)
+                }
+              >
+                <LuChevronRight />
+              </IconButton>
+            </Pagination.NextTrigger>
+          </ButtonGroup>
+        </Pagination.Root>
+      )}
     </VStack>
   )
 }
