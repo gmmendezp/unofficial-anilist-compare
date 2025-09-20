@@ -42,8 +42,8 @@ function MediaDetails({ data }: MediaDetailsProps) {
             </Heading>
           </VStack>
           {data.averageScore && (
-            <Circle size="9" bg="purple" color="white">
-              <Box fontSize={20} h="17px">
+            <Circle size="9" bg="gray.700" color="text.200">
+              <Box fontSize={20} h="15px">
                 {data.averageScore}
               </Box>
             </Circle>
@@ -59,7 +59,7 @@ function MediaDetails({ data }: MediaDetailsProps) {
           {data.genres?.slice(0, 8).map((genre) => (
             <Tag.Root
               variant="subtle"
-              colorPalette="purple"
+              colorPalette="gray"
               size="sm"
               key={genre}
             >
@@ -74,8 +74,8 @@ function MediaDetails({ data }: MediaDetailsProps) {
           alignSelf="flex-end"
           marginTop="auto"
         >
-          <Icon size="md" margin={3}>
-            <LuExternalLink color="white" />
+          <Icon size="md" margin={3} color="white" _hover={{ color: 'gray' }}>
+            <LuExternalLink />
           </Icon>
         </Link>
       </Stack>

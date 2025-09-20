@@ -12,6 +12,10 @@ const config = defineConfig({
           500: { value: '#1e3356' },
           700: { value: '#31b1ee' },
         },
+        text: {
+          200: { value: '#eee' },
+          300: { value: '#ccc' },
+        },
       },
     },
   },

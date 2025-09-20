@@ -18,16 +18,16 @@ const statusCollection = createListCollection({
 function ListSelector({ ...rest }: ListSelectorProps) {
   return (
     <Select.Root
-      color="black"
       variant="subtle"
       size="xs"
       {...rest}
       collection={statusCollection}
+      color="text.300"
       onClick={(e) => e.stopPropagation()}
     >
       <Select.HiddenSelect />
       <Select.Control>
-        <Select.Trigger>
+        <Select.Trigger border="none" bgColor="darkblue.500">
           <Select.ValueText className="capitalize" placeholder="Select List" />
         </Select.Trigger>
         <Select.IndicatorGroup>
@@ -36,7 +36,7 @@ function ListSelector({ ...rest }: ListSelectorProps) {
       </Select.Control>
       <Portal>
         <Select.Positioner>
-          <Select.Content>
+          <Select.Content bgColor="darkblue.500" color="text.200">
             {statusCollection.items.map((status) => (
               <Select.Item item={status} key={status.value}>
                 <span className="capitalize">{status.label.toLowerCase()}</span>

@@ -84,10 +84,12 @@ const getCollectionFromUser = graphql(`
   }
 `) as RequestDocument
 
-const useUserListComparisonData: (
+type GetUserListComparisonDataType = (
   usernameFrom: string,
   usernameTo: string
-) => { comparisonData: UserListComparisonData; isLoading: boolean } = (
+) => { comparisonData: UserListComparisonData; isLoading: boolean }
+
+const useUserListComparisonData: GetUserListComparisonDataType = (
   usernameFrom,
   usernameTo
 ) => {
@@ -95,12 +97,12 @@ const useUserListComparisonData: (
   const { data: userFromData, isFetching: userFromIsFetching } = useQuery<{
     MediaListCollection: MediaListCollection
   }>({
-    queryKey: [usernameFrom],
+    queryKey: [usernameFrom, 'list'],
     queryFn: async () =>
       request('https://graphql.anilist.co', getCollectionFromUser, {
         username: usernameFrom,
       }),
-    enabled: !!usernameFrom,
+    enabled: !!usernameFrom && !!usernameTo,
     refetchOnWindowFocus: false,
   })
   const userFromList = userFromData?.MediaListCollection?.lists
@@ -112,12 +114,12 @@ const useUserListComparisonData: (
   const { data: userToData, isFetching: userToIsFetching } = useQuery<{
     MediaListCollection: MediaListCollection
   }>({
-    queryKey: [usernameTo],
+    queryKey: [usernameTo, 'list'],
     queryFn: async () =>
       request('https://graphql.anilist.co', getCollectionFromUser, {
         username: usernameTo,
       }),
-    enabled: !!usernameTo,
+    enabled: !!usernameFrom && !!usernameTo,
     refetchOnWindowFocus: false,
   })
   const userToList = userToData?.MediaListCollection?.lists

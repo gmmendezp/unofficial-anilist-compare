@@ -42,7 +42,7 @@ function ComparisonTableDataRow({
       </Table.Row>
       <Table.Row
         bgColor="darkblue.300"
-        color="white"
+        color="text.300"
         {...rest}
         display={isOpen ? '' : 'none'}
       >

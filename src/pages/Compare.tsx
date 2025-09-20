@@ -28,7 +28,7 @@ function Compare() {
         />
       </Box>
 
-      <Box md={{ w: '25%' }} flex="none">
+      <Box md={{ w: '25%', maxW: '150px' }} flex="none">
         <TitleLanguageSelector
           titleType={titleType}
           setTitleType={(value: TitleType) => setTitleType(value)}

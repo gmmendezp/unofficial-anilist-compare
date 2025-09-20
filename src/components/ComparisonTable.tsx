@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Table } from '@chakra-ui/react'
+import { Input, Table } from '@chakra-ui/react'
 import { Commet } from 'react-loading-indicators'
 import useUserListComparisonData from '../hooks/useUserListComparisonData'
 import { sortComparisonData } from '../util/sortComparisonData'
@@ -22,16 +22,20 @@ function ComparisonTable({
 }: ComparisonTableProps) {
   const [statusFrom, setStatusFrom] = useState<StatusType>(STATUS.ALL)
   const [statusTo, setStatusTo] = useState<StatusType>(STATUS.ALL)
+  const [nameQuery, setNameQuery] = useState('')
   const [sortProp, setSortProp] = useState('title')
   const [isAsc, setIsAsc] = useState(true)
   const { comparisonData, isLoading } = useUserListComparisonData(
     usernameFrom,
     usernameTo
   )
+
   const updatedComparisonData = filterComparisonData(
     sortComparisonData(comparisonData, sortProp, isAsc, titleType),
     statusFrom,
-    statusTo
+    statusTo,
+    nameQuery,
+    titleType
   )
 
   const updateSortProp = (value: string) => {
@@ -46,7 +50,7 @@ function ComparisonTable({
         variant="line"
         stickyHeader
         bgColor="darkblue.300"
-        color="white"
+        color="text.300"
       >
         <Table.ColumnGroup>
           <Table.Column />
@@ -55,8 +59,8 @@ function ComparisonTable({
           <Table.Column htmlWidth="100px" />
           <Table.Column htmlWidth="100px" />
         </Table.ColumnGroup>
-        <Table.Header cursor="pointer">
-          <Table.Row>
+        <Table.Header>
+          <Table.Row cursor="pointer">
             <ComparisonTableHeader
               headerName="Anime"
               propertyName="title"
@@ -71,14 +75,7 @@ function ComparisonTable({
               isAsc={isAsc}
               isBeingSorted={!!(sortProp === 'fromStatus')}
               textAlign="center"
-            >
-              <ListSelector
-                defaultValue={[STATUS.ALL]}
-                onValueChange={({ value }) =>
-                  setStatusFrom(value[0] as StatusType)
-                }
-              />
-            </ComparisonTableHeader>
+            />
             <ComparisonTableHeader
               headerName={`${usernameTo || 'User 2'}'s status`}
               propertyName="toStatus"
@@ -86,14 +83,7 @@ function ComparisonTable({
               isAsc={isAsc}
               isBeingSorted={!!(sortProp === 'toStatus')}
               textAlign="center"
-            >
-              <ListSelector
-                defaultValue={[STATUS.ALL]}
-                onValueChange={({ value }) =>
-                  setStatusTo(value[0] as StatusType)
-                }
-              />
-            </ComparisonTableHeader>
+            />
             <ComparisonTableHeader
               headerName={`${usernameFrom || 'User 1'}'s score`}
               propertyName="fromScore"
@@ -111,6 +101,37 @@ function ComparisonTable({
               textAlign="center"
             />
           </Table.Row>
+          <Table.Row bgColor="darkblue.200" color="text.300" fontSize="small">
+            <Table.Cell>
+              <Input
+                placeholder="Type to filter"
+                variant="subtle"
+                size="xs"
+                bgColor="darkblue.500"
+                color="text.200"
+                md={{ maxW: 400 }}
+                onChange={(e) => setNameQuery(e.target.value)}
+              />
+            </Table.Cell>
+            <Table.Cell>
+              <ListSelector
+                defaultValue={[STATUS.ALL]}
+                onValueChange={({ value }) =>
+                  setStatusFrom(value[0] as StatusType)
+                }
+              />
+            </Table.Cell>
+            <Table.Cell>
+              <ListSelector
+                defaultValue={[STATUS.ALL]}
+                onValueChange={({ value }) =>
+                  setStatusTo(value[0] as StatusType)
+                }
+              />
+            </Table.Cell>
+            <Table.Cell></Table.Cell>
+            <Table.Cell></Table.Cell>
+          </Table.Row>
         </Table.Header>
         <Table.Body>
           {isLoading ? (
@@ -124,7 +145,11 @@ function ComparisonTable({
             </Table.Row>
           ) : updatedComparisonData && updatedComparisonData.length > 0 ? (
             updatedComparisonData.map((data) => (
-              <ComparisonTableDataRow data={data} titleType={titleType} />
+              <ComparisonTableDataRow
+                data={data}
+                titleType={titleType}
+                key={data.id}
+              />
             ))
           ) : (
             <Table.Row bgColor="inherit">

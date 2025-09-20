@@ -23,7 +23,7 @@ function ComparisonTableHeader({
     <Table.ColumnHeader
       onClick={() => updateSortProp(propertyName)}
       bgColor="darkblue.200"
-      color="white"
+      color="text.300"
       _hover={{ bgColor: 'darkblue.500' }}
       fontSize="small"
       {...rest}

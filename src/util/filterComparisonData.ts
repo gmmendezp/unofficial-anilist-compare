@@ -1,17 +1,18 @@
-import { STATUS } from '../constants'
+import { STATUS, type TitleType } from '../constants'
 import type { UserListComparisonData } from '../hooks/useUserListComparisonData'
 
 export const filterComparisonData = (
   comparisonData: UserListComparisonData,
   statusFrom: string,
-  statusTo: string
+  statusTo: string,
+  nameQuery: string,
+  titleType: TitleType
 ) =>
   comparisonData
     .slice()
     .filter(
       (data) =>
-        data.fromStatus in STATUS &&
-        data.toStatus in STATUS &&
         (statusFrom === STATUS.ALL || data.fromStatus === statusFrom) &&
-        (statusTo === STATUS.ALL || data.toStatus === statusTo)
+        (statusTo === STATUS.ALL || data.toStatus === statusTo) &&
+        data.title[titleType]?.toLowerCase().includes(nameQuery.toLowerCase())
     )
