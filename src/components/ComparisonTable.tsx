@@ -1,5 +1,12 @@
 import { useState } from 'react'
-import { Box, Input, Table } from '@chakra-ui/react'
+import {
+  ButtonGroup,
+  IconButton,
+  Input,
+  Pagination,
+  Table,
+  VStack,
+} from '@chakra-ui/react'
 import { Commet } from 'react-loading-indicators'
 import useUserListComparisonData from '../hooks/useUserListComparisonData'
 import { sortComparisonData } from '../util/sortComparisonData'
@@ -8,6 +15,8 @@ import ComparisonTableHeader from './ComparisonTableHeader'
 import ListSelector from './ListSelector'
 import ComparisonTableDataRow from './ComparisonTableDataRow'
 import { STATUS, type StatusType, type TitleType } from '../constants'
+import ResultsBox from './ResultsBox'
+import { LuChevronLeft, LuChevronRight } from 'react-icons/lu'
 
 interface ComparisonTableProps {
   usernameFrom: string
@@ -25,6 +34,8 @@ function ComparisonTable({
   const [nameQuery, setNameQuery] = useState('')
   const [sortProp, setSortProp] = useState('title')
   const [isAsc, setIsAsc] = useState(true)
+  const [pageSize, setPageSize] = useState(200)
+  const [currentPage, setCurrentPage] = useState(1)
   const { comparisonData, isLoading } = useUserListComparisonData(
     usernameFrom,
     usernameTo
@@ -44,17 +55,16 @@ function ComparisonTable({
   }
 
   return (
-    <>
-      <Box
-        w="100%"
-        color="text.300"
-        textAlign="end"
-        marginBottom={-3}
-        fontSize="xs"
-      >
-        Showing {updatedComparisonData.length} out of {comparisonData.length}{' '}
-        result(s)
-      </Box>
+    <VStack w="100%">
+      <ResultsBox
+        current={updatedComparisonData.length}
+        total={comparisonData.length}
+        pageSize={pageSize}
+        setPageSize={(value) => {
+          setPageSize(value)
+          setCurrentPage(1)
+        }}
+      />
       <Table.Root
         size="sm"
         variant="line"
@@ -154,13 +164,18 @@ function ComparisonTable({
               </Table.Cell>
             </Table.Row>
           ) : updatedComparisonData && updatedComparisonData.length > 0 ? (
-            updatedComparisonData.map((data) => (
-              <ComparisonTableDataRow
-                data={data}
-                titleType={titleType}
-                key={data.id}
-              />
-            ))
+            updatedComparisonData
+              .slice(
+                pageSize * (currentPage - 1),
+                pageSize * (currentPage - 1) + pageSize
+              )
+              .map((data) => (
+                <ComparisonTableDataRow
+                  data={data}
+                  titleType={titleType}
+                  key={data.id}
+                />
+              ))
           ) : (
             <Table.Row bgColor="inherit">
               <Table.Cell colSpan={5} textAlign="center" borderStyle="hidden">
@@ -170,7 +185,47 @@ function ComparisonTable({
           )}
         </Table.Body>
       </Table.Root>
-    </>
+      <Pagination.Root
+        count={updatedComparisonData.length}
+        pageSize={pageSize}
+        page={currentPage}
+      >
+        <ButtonGroup variant="ghost" size="sm" wrap="wrap">
+          <Pagination.PrevTrigger asChild>
+            <IconButton
+              color="text.200"
+              onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
+            >
+              <LuChevronLeft />
+            </IconButton>
+          </Pagination.PrevTrigger>
+
+          <Pagination.Items
+            render={(page) => (
+              <IconButton
+                variant={{ base: 'ghost', _selected: 'outline' }}
+                color="text.200"
+                onClick={() => setCurrentPage(page.value)}
+              >
+                {page.value}
+              </IconButton>
+            )}
+            color="text.200"
+          />
+
+          <Pagination.NextTrigger asChild>
+            <IconButton
+              color="text.200"
+              onClick={() =>
+                currentPage < pageSize && setCurrentPage(currentPage + 1)
+              }
+            >
+              <LuChevronRight />
+            </IconButton>
+          </Pagination.NextTrigger>
+        </ButtonGroup>
+      </Pagination.Root>
+    </VStack>
   )
 }
 
