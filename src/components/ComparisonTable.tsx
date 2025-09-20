@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Input, Table } from '@chakra-ui/react'
+import { Box, Input, Table } from '@chakra-ui/react'
 import { Commet } from 'react-loading-indicators'
 import useUserListComparisonData from '../hooks/useUserListComparisonData'
 import { sortComparisonData } from '../util/sortComparisonData'
@@ -45,6 +45,16 @@ function ComparisonTable({
 
   return (
     <>
+      <Box
+        w="100%"
+        color="text.300"
+        textAlign="end"
+        marginBottom={-3}
+        fontSize="xs"
+      >
+        Showing {updatedComparisonData.length} out of {comparisonData.length}{' '}
+        result(s)
+      </Box>
       <Table.Root
         size="sm"
         variant="line"
