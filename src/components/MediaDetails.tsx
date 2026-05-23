@@ -11,6 +11,7 @@ import {
   Tag,
   VStack,
 } from '@chakra-ui/react'
+import DOMPurify from 'dompurify'
 import { LuExternalLink } from 'react-icons/lu'
 import type { UserListData } from '../hooks/useUserListComparisonData'
 
@@ -19,6 +20,8 @@ interface MediaDetailsProps {
 }
 
 function MediaDetails({ data }: MediaDetailsProps) {
+  const sanitizedDescription = DOMPurify.sanitize(data.description)
+
   return (
     <Stack flexDirection="row" flexWrap="wrap" paddingLeft={6} paddingRight={6}>
       <Box flex="1 1 auto" maxH="300px">
@@ -51,7 +54,7 @@ function MediaDetails({ data }: MediaDetailsProps) {
         </HStack>
 
         <Box
-          dangerouslySetInnerHTML={{ __html: data.description }}
+          dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
           fontSize="smaller"
         />
 

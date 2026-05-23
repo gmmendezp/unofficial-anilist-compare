@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import request, { type RequestDocument } from 'graphql-request'
+import { useMemo } from 'react'
 import { type Maybe, type Page } from '../gql/graphql'
 import useDebounce from './useDebounce'
 
@@ -33,7 +34,7 @@ const getUserFromStringQuery = `
 type GetUserListDataType = (searchQuery?: string) => {
   data: UserListData
   isFetching: boolean
-  status: string
+  error: Error | null
 }
 
 const useGetUsersFromString: GetUserListDataType = (searchQuery?: string) => {
@@ -41,7 +42,7 @@ const useGetUsersFromString: GetUserListDataType = (searchQuery?: string) => {
   const {
     data: usersCollection,
     isFetching,
-    status,
+    error,
   } = useQuery<{
     Page: Page
   }>({
@@ -52,12 +53,12 @@ const useGetUsersFromString: GetUserListDataType = (searchQuery?: string) => {
         perPage: 5,
         search: dbSearchQuery,
       }),
-    enabled: !!dbSearchQuery && dbSearchQuery.length > 3,
+    enabled: !!dbSearchQuery && dbSearchQuery.length > 2,
     refetchOnWindowFocus: false,
   })
 
-  return {
-    data:
+  const users = useMemo(
+    () =>
       usersCollection?.Page?.users
         ?.filter((user) => user && user.name)
         .map((user) => ({
@@ -65,8 +66,13 @@ const useGetUsersFromString: GetUserListDataType = (searchQuery?: string) => {
           name: user?.name || '',
           avatar: user?.avatar?.medium,
         })) || [],
+    [usersCollection]
+  )
+
+  return {
+    data: users,
     isFetching,
-    status,
+    error,
   }
 }
 

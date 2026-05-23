@@ -6,13 +6,13 @@ import {
   Span,
   Spinner,
   useCombobox,
-  useListCollection,
   Image,
   AspectRatio,
   Box,
   InputGroup,
+  createListCollection,
 } from '@chakra-ui/react'
-import { useEffect, useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import useGetUsersFromString, {
   type UserData,
 } from '../hooks/useGetUsersFromString'
@@ -26,13 +26,17 @@ interface UsernameInputProps {
 function UsernameInput({ label, onChange }: UsernameInputProps) {
   const [selectedValue, setSelectedValue] = useState<UserData>()
   const [inputValue, setInputValue] = useState<string>()
-  const { data, isFetching, status } = useGetUsersFromString(inputValue)
+  const { data, isFetching, error } = useGetUsersFromString(inputValue)
 
-  const { collection, set } = useListCollection<UserData>({
-    initialItems: data ?? [],
-    itemToString: (item) => item.name,
-    itemToValue: (item) => item.name,
-  })
+  const collection = useMemo(
+    () =>
+      createListCollection({
+        items: data,
+        itemToString: (item: UserData) => item.name,
+        itemToValue: (item: UserData) => item.name,
+      }),
+    [data]
+  )
 
   const combobox = useCombobox({
     collection,
@@ -40,17 +44,16 @@ function UsernameInput({ label, onChange }: UsernameInputProps) {
     inputValue,
     onInputValueChange: (e) => {
       setInputValue(e.inputValue)
+      setSelectedValue((current) =>
+        current?.name === e.inputValue ? current : undefined
+      )
     },
-    openOnChange: (e) => e.inputValue.length > 2,
+    openOnChange: (e) => e.inputValue.length > 1,
     onValueChange: (e) => {
       setSelectedValue(e?.items[0])
       onChange(e?.value[0] || '')
     },
   })
-
-  useEffect(() => {
-    set(data)
-  }, [status, isFetching, set])
 
   const hydrated = useRef(false)
   if (combobox.value.length && collection.size && !hydrated.current) {
@@ -106,6 +109,10 @@ function UsernameInput({ label, onChange }: UsernameInputProps) {
                 <HStack p="2">
                   <Spinner size="xs" />
                   <Span>Loading...</Span>
+                </HStack>
+              ) : error ? (
+                <HStack p="2">
+                  <Span>Could not search AniList users</Span>
                 </HStack>
               ) : (
                 <>

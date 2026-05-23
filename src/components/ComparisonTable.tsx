@@ -43,7 +43,7 @@ function ComparisonTable({
   const [isAsc, setIsAsc] = useState(true)
   const [pageSize, setPageSize] = useState(200)
   const [currentPage, setCurrentPage] = useState(1)
-  const { comparisonData, isLoading } = useUserListComparisonData(
+  const { comparisonData, isLoading, error } = useUserListComparisonData(
     usernameFrom,
     usernameTo,
     mergeMethod
@@ -175,6 +175,13 @@ function ComparisonTable({
                 />
               </Table.Cell>
             </Table.Row>
+          ) : error ? (
+            <Table.Row bgColor="inherit">
+              <Table.Cell colSpan={5} textAlign="center" borderStyle="hidden">
+                Could not load one or both AniList users. Check usernames or try
+                again later.
+              </Table.Cell>
+            </Table.Row>
           ) : updatedComparisonData && updatedComparisonData.length > 0 ? (
             updatedComparisonData
               .slice(
@@ -207,9 +214,7 @@ function ComparisonTable({
             <Pagination.PrevTrigger asChild>
               <IconButton
                 color="text.200"
-                onClick={() =>
-                  currentPage > 1 && setCurrentPage(currentPage - 1)
-                }
+                onClick={() => setCurrentPage((page) => page - 1)}
               >
                 <LuChevronLeft />
               </IconButton>
@@ -231,9 +236,7 @@ function ComparisonTable({
             <Pagination.NextTrigger asChild>
               <IconButton
                 color="text.200"
-                onClick={() =>
-                  currentPage < pageSize && setCurrentPage(currentPage + 1)
-                }
+                onClick={() => setCurrentPage((page) => page + 1)}
               >
                 <LuChevronRight />
               </IconButton>

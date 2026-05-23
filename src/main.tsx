@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { ChakraProvider } from '@chakra-ui/react'
 import { ThemeProvider } from 'next-themes'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { system } from './chackra-system.tsx'
+import { system } from './chakra-system'
 import App from './App.tsx'
 import './main.css'
 

@@ -67,10 +67,14 @@ const getCollectionFromUser = graphql(`
 type GetUserListParams = (
   username: string,
   enabled: boolean
-) => { data: Array<Maybe<MediaList>>; isLoading: boolean }
+) => { data: Array<Maybe<MediaList>>; isLoading: boolean; error: Error | null }
 
 const useGetUserList: GetUserListParams = (username, enabled) => {
-  const { data: userData, isFetching } = useQuery<{
+  const {
+    data: userData,
+    isFetching,
+    error,
+  } = useQuery<{
     MediaListCollection: MediaListCollection
   }>({
     queryKey: [username, 'list'],
@@ -89,6 +93,7 @@ const useGetUserList: GetUserListParams = (username, enabled) => {
   return {
     data: userList || [],
     isLoading: isFetching,
+    error,
   }
 }
 
