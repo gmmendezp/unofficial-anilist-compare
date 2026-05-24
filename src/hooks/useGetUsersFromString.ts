@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import request, { type RequestDocument } from 'graphql-request'
 import { useMemo } from 'react'
-import { type Maybe, type Page } from '../gql/graphql'
+import { type Maybe, type Page } from '../types/anilist'
 import useDebounce from './useDebounce'
 
 export type UserData = {
@@ -62,9 +62,9 @@ const useGetUsersFromString: GetUserListDataType = (searchQuery?: string) => {
       usersCollection?.Page?.users
         ?.filter((user) => user && user.name)
         .map((user) => ({
-          id: user?.id,
+          id: user?.id ?? undefined,
           name: user?.name || '',
-          avatar: user?.avatar?.medium,
+          avatar: user?.avatar?.medium ?? undefined,
         })) || [],
     [usersCollection]
   )

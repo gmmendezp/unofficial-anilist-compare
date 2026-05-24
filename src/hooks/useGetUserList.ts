@@ -5,7 +5,7 @@ import {
   type MediaListCollection,
   type MediaList,
   type Maybe,
-} from '../gql/graphql'
+} from '../types/anilist'
 import { STATUS } from '../constants'
 
 const getCollectionFromUser = graphql(`

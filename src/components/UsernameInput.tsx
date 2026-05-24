@@ -12,7 +12,7 @@ import {
   InputGroup,
   createListCollection,
 } from '@chakra-ui/react'
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import useGetUsersFromString, {
   type UserData,
 } from '../hooks/useGetUsersFromString'
@@ -56,10 +56,12 @@ function UsernameInput({ label, onChange }: UsernameInputProps) {
   })
 
   const hydrated = useRef(false)
-  if (combobox.value.length && collection.size && !hydrated.current) {
-    combobox.syncSelectedItems()
-    hydrated.current = true
-  }
+  useEffect(() => {
+    if (combobox.value.length && collection.size && !hydrated.current) {
+      combobox.syncSelectedItems()
+      hydrated.current = true
+    }
+  }, [combobox, collection.size])
 
   return (
     <Field.Root md={{ maxW: '35%' }} flex="none">

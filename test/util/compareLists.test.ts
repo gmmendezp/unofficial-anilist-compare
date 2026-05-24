@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { MERGE_METHOD, STATUS } from '../../src/constants'
-import type { MediaList } from '../../src/gql/graphql'
+import type { MediaList } from '../../src/types/anilist'
 import { compareLists } from '../../src/util/compareLists'
 
 const entry = (

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import {
   ButtonGroup,
   IconButton,
@@ -42,7 +42,15 @@ function ComparisonTable({
   const [sortProp, setSortProp] = useState('title')
   const [isAsc, setIsAsc] = useState(true)
   const [pageSize, setPageSize] = useState(200)
-  const [currentPage, setCurrentPage] = useState(1)
+  const comparisonKey = `${usernameFrom}:${usernameTo}:${mergeMethod}`
+  const [pagination, setPagination] = useState({ key: comparisonKey, page: 1 })
+  const currentPage = pagination.key === comparisonKey ? pagination.page : 1
+  const setCurrentPage = (value: number | ((page: number) => number)) => {
+    setPagination(() => ({
+      key: comparisonKey,
+      page: typeof value === 'function' ? value(currentPage) : value,
+    }))
+  }
   const { comparisonData, isLoading, error } = useUserListComparisonData(
     usernameFrom,
     usernameTo,
@@ -61,10 +69,6 @@ function ComparisonTable({
     if (sortProp === value) setIsAsc(!isAsc)
     setSortProp(value)
   }
-
-  useEffect(() => {
-    setCurrentPage(1)
-  }, [usernameFrom, usernameTo, mergeMethod])
 
   return (
     <VStack w="100%">

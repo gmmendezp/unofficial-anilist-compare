@@ -1,5 +1,5 @@
 import { TITLE_TYPE, type TitleType } from '../constants'
-import type { MediaTitle } from '../gql/graphql'
+import type { MediaTitle } from '../types/anilist'
 import type { UserListComparisonData, UserListData } from './compareLists'
 import { getTitle } from './getTitle'
 

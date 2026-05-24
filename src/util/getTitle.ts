@@ -1,5 +1,5 @@
 import { TITLE_TYPE } from '../constants'
-import type { MediaTitle } from '../gql/graphql'
+import type { MediaTitle } from '../types/anilist'
 
 export const getTitle = (title?: MediaTitle | null, titleType?: string) => {
   if (!title) return ''

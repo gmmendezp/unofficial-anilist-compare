@@ -1,6 +1,6 @@
 import { type TitleType } from '../constants'
 import { getTitle } from '../util/getTitle'
-import type { MediaTitle } from '../gql/graphql'
+import type { MediaTitle } from '../types/anilist'
 
 interface TitleProps {
   title: MediaTitle

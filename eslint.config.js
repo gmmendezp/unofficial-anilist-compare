@@ -7,7 +7,7 @@ import eslintConfigPrettier from 'eslint-config-prettier/flat'
 import pluginQuery from '@tanstack/eslint-plugin-query'
 
 export default tseslint.config(
-  { ignores: ['dist'] },
+  { ignores: ['dist'], linterOptions: { reportUnusedDisableDirectives: false } },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],

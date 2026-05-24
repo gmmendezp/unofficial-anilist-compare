@@ -4,7 +4,7 @@ import {
   type MergeMethodType,
   type TitleType,
 } from '../constants'
-import type { Maybe, MediaList } from '../gql/graphql'
+import type { Maybe, MediaList } from '../types/anilist'
 
 export type UserListData = {
   id: number
