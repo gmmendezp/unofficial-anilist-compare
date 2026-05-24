@@ -1,5 +1,7 @@
 import { STATUS, type TitleType } from '../constants'
-import type { UserListComparisonData } from '../hooks/useUserListComparisonData'
+import type { MediaTitle } from '../gql/graphql'
+import type { UserListComparisonData } from './compareLists'
+import { getTitle } from './getTitle'
 
 export const filterComparisonData = (
   comparisonData: UserListComparisonData,
@@ -8,11 +10,11 @@ export const filterComparisonData = (
   nameQuery: string,
   titleType: TitleType
 ) =>
-  comparisonData
-    .slice()
-    .filter(
-      (data) =>
-        (statusFrom === STATUS.ALL || data.fromStatus === statusFrom) &&
-        (statusTo === STATUS.ALL || data.toStatus === statusTo) &&
-        data.title[titleType]?.toLowerCase().includes(nameQuery.toLowerCase())
-    )
+  comparisonData.slice().filter(
+    (data) =>
+      (statusFrom === STATUS.ALL || data.fromStatus === statusFrom) &&
+      (statusTo === STATUS.ALL || data.toStatus === statusTo) &&
+      getTitle(data.title as MediaTitle, titleType)
+        .toLowerCase()
+        .includes(nameQuery.toLowerCase())
+  )

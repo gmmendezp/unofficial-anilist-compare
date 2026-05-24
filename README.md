@@ -1,54 +1,63 @@
-# React + TypeScript + Vite
+# Unofficial AniList Compare
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A small web app for comparing two public AniList anime lists. Pick two users, choose how their lists should be merged, then filter and sort the results to find shared shows or entries that only appear on one list.
 
-Currently, two official plugins are available:
+[Live demo](https://gmmendezp.github.io/unofficial-anilist-compare/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- Search for AniList users with autocomplete.
+- Compare lists using `A and B`, `A or B`, `A not B`, or `B not A`.
+- Filter by each user's watch status.
+- Search results by anime title.
+- Switch between English, romaji, and native titles.
+- Sort by title, status, or score.
+- Open detailed media info with cover art, description, format, genres, score, and AniList link.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Tech Stack
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+- React
+- TypeScript
+- Vite
+- Chakra UI
+- TanStack Query
+- GraphQL Code Generator
+- Vitest
+- pnpm
+
+## Getting Started
+
+Install dependencies and start the dev server:
+
+```sh
+pnpm install
+pnpm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Scripts
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```sh
+pnpm run dev
+pnpm run build
+pnpm run lint
+pnpm run test
+pnpm run test:watch
+pnpm run codegen
+pnpm run preview
 ```
+
+## GraphQL Codegen
+
+The app queries AniList's public GraphQL API and uses generated TypeScript types.
+
+Run codegen after changing GraphQL queries:
+
+```sh
+pnpm run codegen
+```
+
+## Notes
+
+- This project is not affiliated with AniList.
+- It only uses public AniList data.
+- Private lists or users that cannot be fetched from the public API cannot be compared.

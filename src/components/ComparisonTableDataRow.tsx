@@ -1,6 +1,6 @@
 import { Table } from '@chakra-ui/react'
 import type { TableRowProps } from '@chakra-ui/react'
-import type { UserListData } from '../hooks/useUserListComparisonData'
+import type { UserListData } from '../util/compareLists'
 import Title from './Title'
 import Status from './Status'
 import type { TitleType } from '../constants'

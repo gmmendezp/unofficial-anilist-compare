@@ -1,9 +1,6 @@
 import { TITLE_TYPE, type TitleType } from '../constants'
 import type { MediaTitle } from '../gql/graphql'
-import type {
-  UserListComparisonData,
-  UserListData,
-} from '../hooks/useUserListComparisonData'
+import type { UserListComparisonData, UserListData } from './compareLists'
 import { getTitle } from './getTitle'
 
 const compareTitle =
@@ -19,6 +16,21 @@ const compareTitle =
         : -1
   }
 
+const compareScore =
+  (property: 'fromScore' | 'toScore', asc: boolean, titleType: TitleType) =>
+  (a: UserListData, b: UserListData) => {
+    const valueA = a[property]
+    const valueB = b[property]
+
+    if (valueA == null && valueB == null)
+      return compareTitle(asc, titleType)(a, b)
+    if (valueA == null) return 1
+    if (valueB == null) return -1
+    if (valueA === valueB) return compareTitle(asc, titleType)(a, b)
+
+    return asc ? valueA - valueB : valueB - valueA
+  }
+
 export const sortComparisonData = (
   comparisonData: UserListComparisonData,
   property: string,
@@ -28,12 +40,7 @@ export const sortComparisonData = (
   if (property === 'title')
     return comparisonData.slice().sort(compareTitle(asc, titleType))
   else if (property === 'fromScore' || property === 'toScore')
-    return comparisonData.slice().sort((a, b) => {
-      const valueA = a[property as keyof typeof a] as number
-      const valueB = b[property as keyof typeof b] as number
-      if (valueA === valueB) return compareTitle(asc, titleType)(a, b)
-      return asc ? valueA - valueB : valueB - valueA
-    })
+    return comparisonData.slice().sort(compareScore(property, asc, titleType))
   return comparisonData.slice().sort((a, b) => {
     const valueA = (a[property as keyof typeof a] as string).toLowerCase()
     const valueB = (b[property as keyof typeof b] as string).toLowerCase()

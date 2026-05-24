@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react'
 import DOMPurify from 'dompurify'
 import { LuExternalLink } from 'react-icons/lu'
-import type { UserListData } from '../hooks/useUserListComparisonData'
+import type { UserListData } from '../util/compareLists'
 
 interface MediaDetailsProps {
   data: UserListData
