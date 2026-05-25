@@ -4,6 +4,8 @@ import MergeMethodSelector from './MergeMethodSelector'
 import type { MergeMethodType } from '../constants'
 
 interface UserFormProps {
+  usernameFrom: string
+  usernameTo: string
   setUsernameFrom: (value: string) => void
   setUsernameTo: (value: string) => void
   mergeMethod: MergeMethodType
@@ -11,6 +13,8 @@ interface UserFormProps {
 }
 
 function UserForm({
+  usernameFrom,
+  usernameTo,
   setUsernameFrom,
   setUsernameTo,
   mergeMethod,
@@ -21,10 +25,12 @@ function UserForm({
       <Group grow flexWrap="wrap" alignItems="flex-start">
         <UsernameInput
           label="First AniList user"
+          value={usernameFrom}
           onChange={(value: string) => setUsernameFrom(value)}
         />
         <UsernameInput
           label="Second AniList user"
+          value={usernameTo}
           onChange={(value: string) => setUsernameTo(value)}
         />
         <MergeMethodSelector

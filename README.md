@@ -1,29 +1,31 @@
 # Unofficial AniList Compare
 
-A small web app for comparing two public AniList anime lists. Pick two users, choose how their lists should be merged, then filter and sort the results to find shared shows or entries that only appear on one list.
+A React/TypeScript web app for comparing two public AniList anime lists. It integrates with AniList's GraphQL API, and includes tested comparison, filtering, and sorting logic. The app is deployed automatically to GitHub Pages.
 
 [Live demo](https://gmmendezp.github.io/unofficial-anilist-compare/)
 
+![Comparison table showing two AniList users](./docs/images/screenshot.png)
+
 ## Features
 
-- Search for AniList users with autocomplete.
-- Compare lists using `A and B`, `A or B`, `A not B`, or `B not A`.
-- Filter by each user's watch status.
-- Search results by anime title.
+- Search for AniList users with autocomplete and avatar previews.
+- Compare two public AniList anime lists side by side.
+- Show anime in both lists, either list, or only in one of them.
 - Switch between English, romaji, and native titles.
-- Sort by title, status, or score.
-- Open detailed media info with cover art, description, format, genres, score, and AniList link.
+- Filter results by anime title or each user's watch status.
+- Sort results by title, watch status, or user score.
+- View more details for an anime, including cover art, description, format, genres, and score.
 
 ## Tech Stack
 
-- React
-- TypeScript
-- Vite
-- Chakra UI
-- TanStack Query
-- GraphQL Code Generator
-- Vitest
-- pnpm
+- **React + TypeScript**: component-based UI with typed app state and API data.
+- **Vite**: local development and production builds.
+- **Chakra UI**: accessible UI components and responsive styling.
+- **TanStack Query**: AniList API fetching, caching, and request state management.
+- **GraphQL Request + GraphQL Code Generator**: typed AniList GraphQL queries.
+- **Vitest + Testing Library**: tests for hooks, components, and comparison utilities.
+- **GitHub Actions + GitHub Pages**: automated test, build, and deployment workflow.
+- **pnpm**: package management.
 
 ## Getting Started
 

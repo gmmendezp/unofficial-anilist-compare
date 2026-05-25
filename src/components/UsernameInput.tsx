@@ -12,7 +12,7 @@ import {
   InputGroup,
   createListCollection,
 } from '@chakra-ui/react'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 import useGetUsersFromString, {
   type UserData,
 } from '../hooks/useGetUsersFromString'
@@ -20,12 +20,12 @@ import { LuUser } from 'react-icons/lu'
 
 interface UsernameInputProps {
   label: string
+  value: string
   onChange: (value: string) => void
 }
 
-function UsernameInput({ label, onChange }: UsernameInputProps) {
-  const [selectedValue, setSelectedValue] = useState<UserData>()
-  const [inputValue, setInputValue] = useState<string>()
+function UsernameInput({ label, value, onChange }: UsernameInputProps) {
+  const [inputValue, setInputValue] = useState(value)
   const { data, isFetching, error } = useGetUsersFromString(inputValue)
 
   const collection = useMemo(
@@ -38,30 +38,30 @@ function UsernameInput({ label, onChange }: UsernameInputProps) {
     [data]
   )
 
+  const isInputShowingSelectedValue =
+    !!value && inputValue.toLowerCase() === value.toLowerCase()
+  const selectedUser = isInputShowingSelectedValue
+    ? data.find((user) => user.name.toLowerCase() === value.toLowerCase())
+    : undefined
+
+  const updateValue = (value: string) => {
+    setInputValue(value)
+    onChange(value)
+  }
+
   const combobox = useCombobox({
     collection,
-    defaultValue: [],
+    value: value ? [value] : [],
     inputValue,
     onInputValueChange: (e) => {
       setInputValue(e.inputValue)
-      setSelectedValue((current) =>
-        current?.name === e.inputValue ? current : undefined
-      )
     },
     openOnChange: (e) => e.inputValue.length > 1,
     onValueChange: (e) => {
-      setSelectedValue(e?.items[0])
-      onChange(e?.value[0] || '')
+      const nextValue = e?.value[0]
+      if (nextValue) updateValue(nextValue)
     },
   })
-
-  const hydrated = useRef(false)
-  useEffect(() => {
-    if (combobox.value.length && collection.size && !hydrated.current) {
-      combobox.syncSelectedItems()
-      hydrated.current = true
-    }
-  }, [combobox, collection.size])
 
   return (
     <Field.Root md={{ maxW: '35%' }} flex="none">
@@ -81,11 +81,8 @@ function UsernameInput({ label, onChange }: UsernameInputProps) {
             startElement={
               <Box w={8} marginLeft="-3px">
                 <AspectRatio ratio={1} maxH={10}>
-                  {selectedValue?.avatar ? (
-                    <Image
-                      src={selectedValue?.avatar}
-                      alt={selectedValue.name}
-                    />
+                  {selectedUser?.avatar ? (
+                    <Image src={selectedUser.avatar} alt={selectedUser.name} />
                   ) : (
                     <LuUser />
                   )}
@@ -97,10 +94,13 @@ function UsernameInput({ label, onChange }: UsernameInputProps) {
               placeholder="Type to search"
               borderBottom="none"
               boxShadow="none"
+              onBlur={() => {
+                window.setTimeout(() => setInputValue(value), 0)
+              }}
             />
           </InputGroup>
           <Combobox.IndicatorGroup>
-            <Combobox.ClearTrigger />
+            <Combobox.ClearTrigger onClick={() => updateValue('')} />
             <Combobox.Trigger />
           </Combobox.IndicatorGroup>
         </Combobox.Control>
