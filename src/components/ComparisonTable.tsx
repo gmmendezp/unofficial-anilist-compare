@@ -90,10 +90,16 @@ function ComparisonTable({
       >
         <Table.ColumnGroup>
           <Table.Column />
-          <Table.Column htmlWidth="150px" />
-          <Table.Column htmlWidth="150px" />
-          <Table.Column htmlWidth="100px" />
-          <Table.Column htmlWidth="100px" />
+          <Table.Column w="100px" />
+          <Table.Column w="100px" />
+          <Table.Column
+            w="100px"
+            display={{ base: 'none', md: 'table-column' }}
+          />
+          <Table.Column
+            w="100px"
+            display={{ base: 'none', md: 'table-column' }}
+          />
         </Table.ColumnGroup>
         <Table.Header>
           <Table.Row cursor="pointer">
@@ -105,7 +111,7 @@ function ComparisonTable({
               isBeingSorted={!!(sortProp === 'title')}
             />
             <ComparisonTableHeader
-              headerName={`${usernameFrom || 'User 1'}'s status`}
+              headerName={`${usernameFrom || 'First user'}'s status`}
               propertyName="fromStatus"
               updateSortProp={updateSortProp}
               isAsc={isAsc}
@@ -113,7 +119,7 @@ function ComparisonTable({
               textAlign="center"
             />
             <ComparisonTableHeader
-              headerName={`${usernameTo || 'User 2'}'s status`}
+              headerName={`${usernameTo || 'Second user'}'s status`}
               propertyName="toStatus"
               updateSortProp={updateSortProp}
               isAsc={isAsc}
@@ -121,20 +127,22 @@ function ComparisonTable({
               textAlign="center"
             />
             <ComparisonTableHeader
-              headerName={`${usernameFrom || 'User 1'}'s score`}
+              headerName={`${usernameFrom || 'First user'}'s score`}
               propertyName="fromScore"
               updateSortProp={updateSortProp}
               isAsc={isAsc}
               isBeingSorted={!!(sortProp === 'fromScore')}
               textAlign="center"
+              display={{ base: 'none', md: 'table-cell' }}
             />
             <ComparisonTableHeader
-              headerName={`${usernameTo || 'User 2'}'s score`}
+              headerName={`${usernameTo || 'Second user'}'s score`}
               propertyName="toScore"
               updateSortProp={updateSortProp}
               isAsc={isAsc}
               isBeingSorted={!!(sortProp === 'toScore')}
               textAlign="center"
+              display={{ base: 'none', md: 'table-cell' }}
             />
           </Table.Row>
           <Table.Row bgColor="darkblue.200" color="text.300" fontSize="small">
@@ -165,8 +173,8 @@ function ComparisonTable({
                 }
               />
             </Table.Cell>
-            <Table.Cell></Table.Cell>
-            <Table.Cell></Table.Cell>
+            <Table.Cell display={{ base: 'none', md: 'table-cell' }} />
+            <Table.Cell display={{ base: 'none', md: 'table-cell' }} />
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -192,10 +200,11 @@ function ComparisonTable({
                 pageSize * (currentPage - 1),
                 pageSize * (currentPage - 1) + pageSize
               )
-              .map((data) => (
+              .map((data, index) => (
                 <ComparisonTableDataRow
                   data={data}
                   titleType={titleType}
+                  rowNumber={pageSize * (currentPage - 1) + index + 1}
                   key={data.id}
                 />
               ))

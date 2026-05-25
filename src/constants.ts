@@ -37,11 +37,18 @@ export const FORMAT_NAME = {
 }
 
 export const MERGE_METHOD = {
-  AANDB: `A and B`,
-  AORB: 'A or B',
-  ANOTB: 'A not B',
-  BNOTA: 'B not A',
-}
+  AANDB: 'AANDB',
+  AORB: 'AORB',
+  ANOTB: 'ANOTB',
+  BNOTA: 'BNOTA',
+} as const
+
+export const MERGE_METHOD_LABELS = {
+  [MERGE_METHOD.AANDB]: 'In both lists',
+  [MERGE_METHOD.AORB]: 'In either list',
+  [MERGE_METHOD.ANOTB]: "Only in first user's list",
+  [MERGE_METHOD.BNOTA]: "Only in second user's list",
+} as const
 
 export type StatusType = valueof<typeof STATUS>
 export type TitleType = valueof<typeof TITLE_TYPE>

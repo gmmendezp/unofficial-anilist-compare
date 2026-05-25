@@ -20,11 +20,11 @@ function UserForm({
     <Stack gap="2">
       <Group grow flexWrap="wrap" alignItems="flex-start">
         <UsernameInput
-          label="User 1"
+          label="First AniList user"
           onChange={(value: string) => setUsernameFrom(value)}
         />
         <UsernameInput
-          label="User 2"
+          label="Second AniList user"
           onChange={(value: string) => setUsernameTo(value)}
         />
         <MergeMethodSelector

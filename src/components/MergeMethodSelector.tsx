@@ -1,5 +1,9 @@
 import { createListCollection, Field, Portal, Select } from '@chakra-ui/react'
-import { MERGE_METHOD, type MergeMethodType } from '../constants'
+import {
+  MERGE_METHOD,
+  MERGE_METHOD_LABELS,
+  type MergeMethodType,
+} from '../constants'
 
 interface MergeMethodSelectorProps {
   mergeMethod: MergeMethodType
@@ -7,9 +11,9 @@ interface MergeMethodSelectorProps {
 }
 
 const mergeMethodCollection = createListCollection({
-  items: Object.entries(MERGE_METHOD).map(([, label]) => ({
-    label,
-    value: label,
+  items: Object.values(MERGE_METHOD).map((value) => ({
+    label: MERGE_METHOD_LABELS[value],
+    value,
   })),
 })
 
@@ -20,7 +24,7 @@ function MergeMethodSelector({
   return (
     <Field.Root md={{ maxW: '100%' }}>
       <Field.Label color="text.300">
-        Merge Method
+        Show results that are
         <Field.RequiredIndicator />
       </Field.Label>
       <Select.Root

@@ -23,11 +23,22 @@ function MediaDetails({ data }: MediaDetailsProps) {
   const sanitizedDescription = DOMPurify.sanitize(data.description)
 
   return (
-    <Stack flexDirection="row" flexWrap="wrap" paddingLeft={6} paddingRight={6}>
+    <Stack flexDirection="row" flexWrap="wrap" padding={6}>
       <Box flex="1 1 auto" maxH="300px">
-        <AspectRatio maxW="200px" ratio={7 / 10}>
-          <Image src={data.image} objectFit="cover" alt={`${data.id}`} />
-        </AspectRatio>
+        <Link
+          href={data.url}
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Open anime on AniList"
+          display="block"
+          maxW="200px"
+          _hover={{ opacity: 0.85 }}
+          transition="opacity 120ms ease"
+        >
+          <AspectRatio ratio={7 / 10}>
+            <Image src={data.image} objectFit="cover" alt="" />
+          </AspectRatio>
+        </Link>
       </Box>
 
       <Stack w="calc(100% - 220px)">
@@ -78,6 +89,7 @@ function MediaDetails({ data }: MediaDetailsProps) {
         <Link
           href={data.url}
           target="_blank"
+          rel="noreferrer"
           alignSelf="flex-end"
           marginTop="auto"
         >

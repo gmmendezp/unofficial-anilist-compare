@@ -29,9 +29,7 @@ export type UserListComparisonData = Array<UserListData>
 export const compareLists = (
   list1: Maybe<MediaList>[],
   list2: Array<Maybe<MediaList>>
-): {
-  [method: MergeMethodType]: UserListComparisonData
-} => {
+): Record<MergeMethodType, UserListComparisonData> => {
   const aandb: UserListComparisonData = []
   const aorb: UserListComparisonData = []
   const anotb: UserListComparisonData = []

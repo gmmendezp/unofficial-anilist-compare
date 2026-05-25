@@ -1,4 +1,4 @@
-import { Table } from '@chakra-ui/react'
+import { Box, Table } from '@chakra-ui/react'
 import type { TableRowProps } from '@chakra-ui/react'
 import type { UserListData } from '../util/compareLists'
 import Title from './Title'
@@ -10,11 +10,13 @@ import { useState } from 'react'
 interface ComparisonTableDataRowProps extends TableRowProps {
   data: UserListData
   titleType: TitleType
+  rowNumber: number
 }
 
 function ComparisonTableDataRow({
   data,
   titleType,
+  rowNumber,
   ...rest
 }: ComparisonTableDataRowProps) {
   const [isOpen, setIsOpen] = useState(false)
@@ -29,7 +31,12 @@ function ComparisonTableDataRow({
         {...rest}
       >
         <Table.Cell>
-          <Title title={title} url={url} titleType={titleType} />
+          <Box display="flex" alignItems="center" gap={2}>
+            <Box as="span" color="whiteAlpha.500" minW="4ch" flex="none">
+              #{rowNumber}
+            </Box>
+            <Title title={title} url={url} titleType={titleType} />
+          </Box>
         </Table.Cell>
         <Table.Cell textAlign="center">
           <Status status={fromStatus} />
@@ -37,15 +44,34 @@ function ComparisonTableDataRow({
         <Table.Cell textAlign="center">
           <Status status={toStatus} />
         </Table.Cell>
-        <Table.Cell textAlign="center">{fromScore}</Table.Cell>
-        <Table.Cell textAlign="center">{toScore}</Table.Cell>
+        <Table.Cell
+          textAlign="center"
+          display={{ base: 'none', md: 'table-cell' }}
+        >
+          {fromScore}
+        </Table.Cell>
+        <Table.Cell
+          textAlign="center"
+          display={{ base: 'none', md: 'table-cell' }}
+        >
+          {toScore}
+        </Table.Cell>
       </Table.Row>
       <Table.Row bgColor="darkblue.300" color="text.300" {...rest}>
-        {isOpen && (
-          <Table.Cell colSpan={5} paddingLeft={0} paddingRight={0}>
-            <MediaDetails data={data}></MediaDetails>
-          </Table.Cell>
-        )}
+        <Table.Cell colSpan={5} padding={0}>
+          <Box
+            display="grid"
+            gridTemplateRows={isOpen ? '1fr' : '0fr'}
+            transition="grid-template-rows 160ms ease"
+            borderBottomWidth="1px"
+            borderBottomStyle="solid"
+            borderBottomColor="whiteAlpha.200"
+          >
+            <Box overflow="hidden">
+              <MediaDetails data={data}></MediaDetails>
+            </Box>
+          </Box>
+        </Table.Cell>
       </Table.Row>
     </>
   )
