@@ -45,10 +45,14 @@ function MediaDetails({ data }: MediaDetailsProps) {
             </Heading>
           </VStack>
           {data.averageScore && (
-            <Circle size="9" bg="gray.700" color="text.200">
-              <Box fontSize={20} h="15px">
-                {data.averageScore}
-              </Box>
+            <Circle
+              size="9"
+              bg="gray.700"
+              color="text.200"
+              fontSize={20}
+              lineHeight="1"
+            >
+              {data.averageScore}
             </Circle>
           )}
         </HStack>

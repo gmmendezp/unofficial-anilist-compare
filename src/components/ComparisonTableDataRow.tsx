@@ -23,7 +23,7 @@ function ComparisonTableDataRow({
     <>
       <Table.Row
         bgColor="inherit"
-        _hover={{ bgColor: 'darkblue.700' }}
+        _hover={{ bgColor: 'darkblue.600' }}
         borderStyle="hidden"
         onClick={() => setIsOpen(!isOpen)}
         {...rest}
@@ -41,9 +41,11 @@ function ComparisonTableDataRow({
         <Table.Cell textAlign="center">{toScore}</Table.Cell>
       </Table.Row>
       <Table.Row bgColor="darkblue.300" color="text.300" {...rest}>
-        <Table.Cell colSpan={5} paddingLeft={0} paddingRight={0}>
-          {isOpen && <MediaDetails data={data}></MediaDetails>}
-        </Table.Cell>
+        {isOpen && (
+          <Table.Cell colSpan={5} paddingLeft={0} paddingRight={0}>
+            <MediaDetails data={data}></MediaDetails>
+          </Table.Cell>
+        )}
       </Table.Row>
     </>
   )

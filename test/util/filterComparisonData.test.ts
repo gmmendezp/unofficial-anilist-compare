@@ -49,7 +49,7 @@ describe('filterComparisonData', () => {
     ).toHaveLength(2)
   })
 
-  it('filters by from status', () => {
+  it('filters by first user status', () => {
     expect(
       filterComparisonData(
         comparisonData,
@@ -61,7 +61,7 @@ describe('filterComparisonData', () => {
     ).toEqual([2])
   })
 
-  it('filters by to status', () => {
+  it('filters by second user status', () => {
     expect(
       filterComparisonData(
         comparisonData,

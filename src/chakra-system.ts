@@ -10,6 +10,7 @@ const config = defineConfig({
           200: { value: '#151f2d' },
           300: { value: '#152232' },
           500: { value: '#1e3356' },
+          600: { value: '#28618f' },
           700: { value: '#31b1ee' },
         },
         text: {
